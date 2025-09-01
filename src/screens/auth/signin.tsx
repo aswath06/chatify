@@ -11,15 +11,17 @@ export const Signin = ({ navigation }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignin = () => {
-    console.log('Phone Number:', email); // log phone number
-    setIsLoading(true);
+  console.log('Phone Number:', email); // log phone number
+  setIsLoading(true);
 
-    // simulate network request
-    setTimeout(() => {
-      setIsLoading(false);
-      // navigation.navigate('SomeScreen');
-    }, 3000);
-  };
+  // simulate network request
+  setTimeout(() => {
+    setIsLoading(false);
+    // Navigate to OTP page with phone number
+    navigation.navigate('otp', { phoneNumber: email });
+  }, 3000);
+};
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,9 +51,14 @@ export const Signin = ({ navigation }: any) => {
       </View>
 
       {/* Sign in Button */}
-      <TouchableOpacity style={styles.button} onPress={handleSignin}>
-        <Text style={styles.buttonText}>Sign in</Text>
-      </TouchableOpacity>
+      <TouchableOpacity 
+  style={styles.button} 
+  onPress={handleSignin} 
+  disabled={isLoading}
+>
+  <Text style={styles.buttonText}>Sign in</Text>
+</TouchableOpacity>
+
 
       {/* Sign Up Text */}
       <View style={styles.signupContainer}>

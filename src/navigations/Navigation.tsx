@@ -2,7 +2,7 @@ import React from 'react';
 // Packages
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { GetStarted, Privacy, Signin, Signup, Tream, Welcome } from '../screens';
+import { Dashboard, GetStarted, OTPPage, Privacy, Signin, Signup, Tream, Welcome } from '../screens';
 
 // Screens
 
@@ -18,6 +18,8 @@ export const Navigation = () => {
         <RootStack.Screen name="term" component={Tream}  options={{ headerShown: false }} />
         <RootStack.Screen name="Signin" component={Signin}  options={{ headerShown: false }} />
         <RootStack.Screen name="Signup" component={Signup}  options={{ headerShown: false }} />
+        <RootStack.Screen name="otp" component={OTPPage}  options={{ headerShown: false }} />
+        <RootStack.Screen name="dashboard" component={Dashboard}  options={{ headerShown: false }} />
       </RootStack.Navigator>
     </NavigationContainer>
   );

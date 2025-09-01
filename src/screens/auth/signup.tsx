@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Switch, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Switch } from 'react-native';
 import React, { useState } from 'react';
 import { Logo, Phoneicon } from '../../assets/icons';
 import { moderateScale } from '../../utils/scalingUtils';
@@ -17,7 +17,8 @@ export const Signup = ({ navigation }: any) => {
     // simulate network request
     setTimeout(() => {
       setIsLoading(false);
-      // navigation.navigate('SomeScreen');
+      // Navigate to OTP page with phone number
+      navigation.navigate('otp', { phoneNumber: email.trim() });
     }, 3000);
   };
 
@@ -49,7 +50,7 @@ export const Signup = ({ navigation }: any) => {
       </View>
 
       {/* Sign Up Button */}
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
+      <TouchableOpacity style={styles.button} onPress={handleSignup} disabled={isLoading}>
         <Text style={styles.buttonText}>Sign up</Text>
       </TouchableOpacity>
 
@@ -132,6 +133,6 @@ const styles = StyleSheet.create({
     right: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.2)', // optional: dim background
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
 });
