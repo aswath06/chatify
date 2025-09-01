@@ -1,16 +1,16 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Switch } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Switch, ActivityIndicator } from 'react-native';
 import React, { useState } from 'react';
 import { Logo, Phoneicon } from '../../assets/icons';
 import { moderateScale } from '../../utils/scalingUtils';
 import { InputBox, Loading } from '../../components';
 
-export const Signin = ({ navigation }: any) => {
+export const Signup = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignin = () => {
+  const handleSignup = () => {
     console.log('Phone Number:', email); // log phone number
     setIsLoading(true);
 
@@ -24,7 +24,7 @@ export const Signin = ({ navigation }: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <Logo />
-      <Text style={styles.heading}>Sign in to your Account</Text>
+      <Text style={styles.heading}>Sign up for free</Text>
 
       <InputBox
         label="Phone Number"
@@ -48,16 +48,16 @@ export const Signin = ({ navigation }: any) => {
         <Text style={styles.rememberText}>Remember Me</Text>
       </View>
 
-      {/* Sign in Button */}
-      <TouchableOpacity style={styles.button} onPress={handleSignin}>
-        <Text style={styles.buttonText}>Sign in</Text>
+      {/* Sign Up Button */}
+      <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        <Text style={styles.buttonText}>Sign up</Text>
       </TouchableOpacity>
 
-      {/* Sign Up Text */}
+      {/* Sign In Text */}
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>Did you have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-          <Text style={styles.signupButtonText}>Sign Up</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
+          <Text style={styles.signupButtonText}>Sign in</Text>
         </TouchableOpacity>
       </View>
 
