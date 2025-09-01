@@ -5,7 +5,6 @@ import { Logo } from '../../assets/icons';
 export const GetStarted = () => {
   return (
     <View style={styles.container}>
-      <Text>Get Started</Text>
       <Logo/>
     </View>
   );

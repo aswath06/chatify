@@ -2,7 +2,8 @@ import React from 'react';
 // Packages
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { GetStarted } from '../screens';
+import { GetStarted, Privacy, Signin, Tream, Welcome } from '../screens';
+
 // Screens
 
 const RootStack = createNativeStackNavigator();
@@ -10,8 +11,12 @@ const RootStack = createNativeStackNavigator();
 export const Navigation = () => {
   return (
     <NavigationContainer>
-      <RootStack.Navigator initialRouteName="Getsatrted">
+      <RootStack.Navigator initialRouteName="Welcome">
         <RootStack.Screen name="Getsatrted" component={GetStarted} options={{ headerShown: false }} />
+        <RootStack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+        <RootStack.Screen name="privacy" component={Privacy}  options={{ headerShown: false }} />
+        <RootStack.Screen name="term" component={Tream}  options={{ headerShown: false }} />
+        <RootStack.Screen name="Signin" component={Signin}  options={{ headerShown: false }} />
       </RootStack.Navigator>
     </NavigationContainer>
   );
