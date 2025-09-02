@@ -6,7 +6,7 @@ import { moderateScale } from '../../utils/scalingUtils';
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('Chats');
 
-  const tabs = ['Chats', 'Groups', 'Status', 'Calls'];
+  const tabs = ['Chats', 'Groups', 'Status', 'Calls' ,'All users' ];
 
   const chatData = [
     {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    gap: moderateScale(60),
+    gap: moderateScale(30),
     marginTop: moderateScale(20),
   },
   tabItem: {
