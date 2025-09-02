@@ -6,6 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { getUser, storeUser } from '../../store/storage';
 import axios from 'axios';
 import { BASE_URL } from '../../config/apiConfig';
+import * as ImagePicker from 'react-native-image-picker';
 
 export const Profile = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -15,6 +16,7 @@ export const Profile = ({ navigation }) => {
   const [profileImg, setProfileImg] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [originalUser, setOriginalUser] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   // Fetch user on mount
   useEffect(() => {
@@ -25,56 +27,96 @@ export const Profile = ({ navigation }) => {
         setName(user.name || '');
         setUsername(user.username || '');
         setEmail(user.email || '');
-        setProfileImg(user.profileImg || '');
+        setProfileImg(formatImageUrl(user.profileImg));
         setDateOfBirth(user.dateOfBirth ? new Date(user.dateOfBirth) : new Date());
       }
     };
     fetchUser();
   }, []);
 
+  const formatImageUrl = (uri: string) => {
+    if (!uri) return '';
+    return uri.startsWith('http') ? uri : `${BASE_URL}/${uri.replace(/^\/?/, '')}`;
+  };
+
   const onChangeDate = (event, selectedDate) => {
     setShowDatePicker(Platform.OS === 'ios');
     if (selectedDate) setDateOfBirth(selectedDate);
   };
 
-  // Check if any field changed
   const isModified = () => {
     if (!originalUser) return false;
     return (
       name !== originalUser.name ||
       username !== originalUser.username ||
       email !== originalUser.email ||
-      dateOfBirth.toISOString() !== new Date(originalUser.dateOfBirth).toISOString()
+      dateOfBirth.toISOString() !== new Date(originalUser.dateOfBirth).toISOString() ||
+      profileImg !== formatImageUrl(originalUser.profileImg)
     );
   };
 
-  const handleUpdate = async () => {
+  // ---------------- Image Picker ---------------- //
+  const pickImage = () => {
+    ImagePicker.launchImageLibrary(
+      { mediaType: 'photo', maxWidth: 500, maxHeight: 500, quality: 0.7 },
+      async (response) => {
+        if (response.didCancel) return;
+        if (response.errorCode) {
+          alert('Error picking image: ' + response.errorMessage);
+          return;
+        }
+
+        const asset = response.assets?.[0];
+        if (!asset) return;
+
+        // Preview locally
+        setProfileImg(asset.uri);
+
+        // Upload immediately
+        await uploadProfile({ uri: asset.uri, type: asset.type, name: asset.fileName });
+      }
+    );
+  };
+
+  const uploadProfile = async (image?) => {
     if (!originalUser) return;
-    const updatedUser = {
-      ...originalUser,
-      name,
-      username,
-      email,
-      dateOfBirth: dateOfBirth.toISOString(),
-    };
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('username', username);
+    formData.append('email', email);
+    formData.append('dateOfBirth', dateOfBirth.toISOString());
+
+    if (image) {
+      formData.append('profileImg', image);
+    }
 
     try {
-      // Optional: sync with backend
-      await axios.put(`${BASE_URL}/users/${originalUser.userId}`, {
-        name: updatedUser.name,
-        username: updatedUser.username,
-        email: updatedUser.email,
-        dateOfBirth: updatedUser.dateOfBirth,
+      setUploading(true);
+      const res = await axios.put(`${BASE_URL}/users/${originalUser.userId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-
-      // Store locally
-      await storeUser(updatedUser);
+      const updatedUser = res.data;
       setOriginalUser(updatedUser);
+      setProfileImg(formatImageUrl(updatedUser.profileImg));
+      await storeUser(updatedUser);
       alert('Profile updated successfully!');
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Failed to update profile. Please try again.');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update profile');
+    } finally {
+      setUploading(false);
     }
+  };
+
+  const handleUpdate = async () => {
+    // If profileImg is local URI, send it; else just send form data
+    let image;
+    if (profileImg && !profileImg.startsWith('http')) {
+      const filename = profileImg.split('/').pop();
+      image = { uri: profileImg, type: 'image/jpeg', name: filename };
+    }
+    await uploadProfile(image);
   };
 
   const handleCancel = () => {
@@ -83,6 +125,7 @@ export const Profile = ({ navigation }) => {
       setUsername(originalUser.username);
       setEmail(originalUser.email);
       setDateOfBirth(new Date(originalUser.dateOfBirth));
+      setProfileImg(formatImageUrl(originalUser.profileImg));
     }
   };
 
@@ -113,32 +156,28 @@ export const Profile = ({ navigation }) => {
             source={{ uri: profileImg || 'https://lh3.googleusercontent.com/a/ACg8ocJUDVcUKiE7vKDEZiBiHdfVkEa8dPU1vioE9hyLdZMQevYJ-eoK=s192-c' }} 
             style={styles.image} 
           />
-          <TouchableOpacity style={styles.editIconContainer}>
+          <TouchableOpacity style={styles.editIconContainer} onPress={pickImage}>
             <Editicon />
           </TouchableOpacity>
         </View>
 
         {/* Input Fields */}
         <View style={styles.form}>
-          {/* Name */}
           <View style={{ marginBottom: moderateScale(16) }}>
             <Text style={styles.label}>Name <Text style={styles.asterisk}>*</Text></Text>
             <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Enter your name" />
           </View>
 
-          {/* Username */}
           <View style={{ marginBottom: moderateScale(16) }}>
             <Text style={styles.label}>Username <Text style={styles.asterisk}>*</Text></Text>
             <TextInput style={styles.input} value={username} onChangeText={setUsername} placeholder="Enter your username" />
           </View>
 
-          {/* Email */}
           <View style={{ marginBottom: moderateScale(16) }}>
             <Text style={styles.label}>Email <Text style={styles.asterisk}>*</Text></Text>
             <TextInput style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" placeholder="Enter your email" />
           </View>
 
-          {/* Date of Birth */}
           <View style={{ marginBottom: moderateScale(16) }}>
             <Text style={styles.label}>Date of Birth <Text style={styles.asterisk}>*</Text></Text>
             <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
@@ -155,14 +194,13 @@ export const Profile = ({ navigation }) => {
             )}
           </View>
 
-          {/* Update & Cancel Buttons */}
           {isModified() && (
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
                 <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
-                <Text style={styles.buttonText1}>Update</Text>
+              <TouchableOpacity style={styles.updateButton} onPress={handleUpdate} disabled={uploading}>
+                <Text style={styles.buttonText1}>{uploading ? 'Uploading...' : 'Update'}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -175,8 +213,8 @@ export const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'white', paddingTop: moderateScale(50) },
   imageContainer: { marginVertical: moderateScale(20), alignItems:'center', justifyContent:'center' },
-  image: { width: moderateScale(150), height: moderateScale(150), borderRadius: moderateScale(75) },
-  editIconContainer: { position: 'absolute', bottom: 0, right: moderateScale(110), backgroundColor: '#31C48D', borderRadius: moderateScale(16), padding: moderateScale(6), alignItems: 'center', justifyContent: 'center' },
+  image: { width: moderateScale(150), height: moderateScale(150), borderRadius: moderateScale(53) },
+  editIconContainer: { position: 'absolute', bottom: 0, right: moderateScale(120), backgroundColor: '#31C48D', borderRadius: moderateScale(16), padding: moderateScale(6), alignItems: 'center', justifyContent: 'center' },
   appbar: { flexDirection: 'row', alignItems: 'center', gap: moderateScale(25) },
   headingtext: { fontSize: moderateScale(26), fontWeight: '700', color: 'black' },
   icons: { flexDirection:'row', gap:moderateScale(16) },
