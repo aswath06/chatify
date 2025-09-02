@@ -1,39 +1,41 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { moderateScale } from '../../utils/scalingUtils';
-import { Addicon, Editicon, QrcodeIcon, Searchicon } from '../../assets/icons';
+import { Editicon, QrcodeIcon } from '../../assets/icons';
 
 type ProfileCardProps = {
   name: string;
-  email: string; // replaced phone with email
-  image: string; // URL string
-  onEditPress?: () => void;
-  onQRPress?: () => void;
+  email: string;
+  image: string;
+  onAvatarPress?: () => void; // separate avatar press
+  onTextPress?: () => void;   // separate text press
+  onQRPress?: () => void;      // separate QR code press
 };
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({
   name,
   email,
   image,
-  onEditPress,
+  onAvatarPress,
+  onTextPress,
   onQRPress,
 }) => {
   return (
     <View style={styles.container}>
-      <View>
+      <TouchableOpacity onPress={onAvatarPress}>
         <Image source={{ uri: image }} style={styles.profileImage} />
-        {onEditPress && (
-          <TouchableOpacity style={styles.editIcon} onPress={onEditPress}>
+        {onAvatarPress && (
+          <View style={styles.editIcon}>
             <Editicon width={moderateScale(20)} height={moderateScale(20)} />
-          </TouchableOpacity>
+          </View>
         )}
-      </View>
+      </TouchableOpacity>
 
-      <View style={styles.detailsContainer}>
+      <TouchableOpacity style={styles.detailsContainer} onPress={onTextPress}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.email}>{email}</Text>
-        <Text style={styles.status}>Available</Text> 
-      </View>
+        <Text style={styles.status}>Available</Text>
+      </TouchableOpacity>
 
       {onQRPress && (
         <TouchableOpacity style={styles.qrIcon} onPress={onQRPress}>

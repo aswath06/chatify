@@ -30,7 +30,7 @@ const SettingPage: React.FC<{ navigation: any }> = ({ navigation }) => {
       const storedUser = await getUser();
       if (storedUser) {
         setUser({
-          name: storedUser.name,
+          name: storedUser.username,
           email: storedUser.email,
           profileImg: storedUser.profileImg,
         });
@@ -51,16 +51,22 @@ const handleLogoutConfirm = async () => {
   try {
     await removeUser(); // remove user from AsyncStorage
     setLogoutModalVisible(false);
+
+    // Navigate in the next frame to avoid updating navigation during render
+    setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Welcome' }], // your Welcome screen
+      });
+    }, 0);
+
     Alert.alert('Logged out successfully!');
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Welcome' }], // replace with your login page name
-    });
   } catch (error) {
     console.error('Error logging out:', error);
     Alert.alert('Error logging out. Please try again.');
   }
 };
+
 
   if (!user) {
     return (
@@ -85,8 +91,9 @@ const handleLogoutConfirm = async () => {
         name={user.name}
         email={user.email}
         image={user.profileImg}
-        onEditPress={handleEditPress}
         onQRPress={handleQRPress}
+        onTextPress={() => navigation.navigate('Profile')} // <-- fix here
+    onAvatarPress={() => console.log('Avatar pressed')} // optional
       />
 
       <View style={styles.line} />

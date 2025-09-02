@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Screens
-import { Dashboard, GetStarted, OTPPage, Privacy, Signin, Signup, Tream, Welcome } from '../screens';
+import { Dashboard, GetStarted, OTPPage, Privacy, Profile, profile, Signin, Signup, Tream, Welcome } from '../screens';
 import SettingPage from '../screens/setting/settingpage';
 
 const USER_KEY = 'user';
@@ -48,6 +48,7 @@ export const Navigation = () => {
         <RootStack.Screen name="otp" component={OTPPage}  options={{ headerShown: false }} />
         <RootStack.Screen name="dashboard" component={Dashboard}  options={{ headerShown: false }} />
         <RootStack.Screen name="SettingPage" component={SettingPage}  options={{ headerShown: false }} />
+         <RootStack.Screen name="Profile" component={Profile}  options={{ headerShown: false }} />
       </RootStack.Navigator>
     </NavigationContainer>
   );
