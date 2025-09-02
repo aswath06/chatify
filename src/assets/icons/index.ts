@@ -6,3 +6,4 @@ export * from './searchicon';
 export * from './addicon';
 export * from './qrcodeicon';
 export * from './editicon';
+export * from './righticon';

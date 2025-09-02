@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Arrowback } from '../../assets/icons';
+import {
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+} from 'react-native';
+import { Arrowback, Phoneicon } from '../../assets/icons';
 import { moderateScale } from '../../utils/scalingUtils';
-import { getUser } from '../../store/storage';
+import { getUser, removeUser } from '../../store/storage';
 import { ProfileCard } from '../../components/profiecard';
+import { ListRow } from '../../components';
 
 type UserType = {
   name: string;
@@ -13,6 +23,7 @@ type UserType = {
 
 const SettingPage: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [user, setUser] = useState<UserType | null>(null);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,6 +46,21 @@ const SettingPage: React.FC<{ navigation: any }> = ({ navigation }) => {
   const handleQRPress = () => {
     Alert.alert('QR button pressed!');
   };
+
+const handleLogoutConfirm = async () => {
+  try {
+    await removeUser(); // remove user from AsyncStorage
+    setLogoutModalVisible(false);
+    Alert.alert('Logged out successfully!');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Welcome' }], // replace with your login page name
+    });
+  } catch (error) {
+    console.error('Error logging out:', error);
+    Alert.alert('Error logging out. Please try again.');
+  }
+};
 
   if (!user) {
     return (
@@ -64,6 +90,72 @@ const SettingPage: React.FC<{ navigation: any }> = ({ navigation }) => {
       />
 
       <View style={styles.line} />
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <ListRow
+          icon={<Phoneicon />}
+          heading="Account"
+          onPress={() => console.log('Account pressed')}
+        />
+        <ListRow
+          icon={<Phoneicon />}
+          heading="Chat"
+          onPress={() => console.log('Chat pressed')}
+        />
+        <ListRow
+          icon={<Phoneicon />}
+          heading="Notification"
+          onPress={() => console.log('Notification pressed')}
+        />
+        <ListRow
+          icon={<Phoneicon />}
+          heading="Security"
+          onPress={() => console.log('Security pressed')}
+        />
+        <ListRow
+          icon={<Phoneicon />}
+          heading="Help"
+          onPress={() => console.log('Help pressed')}
+        />
+        <ListRow
+          icon={<Phoneicon />}
+          heading="Logout"
+          onPress={() => setLogoutModalVisible(true)}
+          showArrow={false}
+          iconBackgroundColor="#FFE8EC"
+        />
+      </ScrollView>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+  visible={logoutModalVisible}
+  transparent
+  animationType="slide"
+  onRequestClose={() => setLogoutModalVisible(false)}
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.modalContainer}>
+      <Text style={styles.modalText}>Are you sure you want to logout?</Text>
+
+      <View style={styles.modalButtonRow}>
+        <TouchableOpacity
+          style={[styles.modalButton, { backgroundColor: 'white',borderColor:'#31C48D' ,borderWidth:moderateScale(1)}]}
+          onPress={() => setLogoutModalVisible(false)}
+        >
+          <Text style={styles.cancelbutton}>Cancel</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.modalButton, { backgroundColor: '#31C48D' }]}
+          onPress={handleLogoutConfirm}
+        >
+          <Text style={[styles.modalButtonText, { color: 'white' }]}>Yes, Logout</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
+
     </SafeAreaView>
   );
 };
@@ -92,4 +184,49 @@ const styles = StyleSheet.create({
     backgroundColor: '#EBEEF2',
     marginVertical: moderateScale(24),
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+modalContainer: {
+  height: moderateScale(219),
+  backgroundColor: 'white',
+  borderTopLeftRadius: moderateScale(50),
+  borderTopRightRadius: moderateScale(50),
+  paddingHorizontal: moderateScale(20),
+  paddingTop: moderateScale(50),
+  alignItems: 'center',
+},
+modalText: {
+  fontSize: moderateScale(18),
+  fontWeight: '500',
+  textAlign: 'center',
+  marginBottom: moderateScale(30),
+},
+modalButtonRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  width: '100%',
+  paddingHorizontal: moderateScale(20),
+},
+modalButton: {
+  width: moderateScale(140),
+  height: moderateScale(50),
+  borderRadius: moderateScale(30),
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+modalButtonText: {
+  fontSize: moderateScale(16),
+  fontWeight: '600',
+  color: '#31C48D',
+},
+cancelbutton: {
+  fontSize: moderateScale(16),
+  fontWeight: '600',
+  color: '#31C48D',
+  backgroundColor:'white'
+},
+
 });

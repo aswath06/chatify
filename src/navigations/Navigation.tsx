@@ -22,7 +22,7 @@ export const Navigation = () => {
         if (storedUser) {
           setInitialRoute('Getsatrted'); // If user exists, go to dashboard
         } else {
-          setInitialRoute('welcome'); // Otherwise, show Welcome
+          setInitialRoute('Welcome'); // Otherwise, show Welcome
         }
       } catch (error) {
         console.error('Error checking user:', error);
