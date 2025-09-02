@@ -1,11 +1,12 @@
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Switch, Alert } from 'react-native';
 import React, { useState } from 'react';
-import { Logo, Phoneicon } from '../../assets/icons';
+import { Logo, PersonIcon, Phoneicon } from '../../assets/icons';
 import { moderateScale } from '../../utils/scalingUtils';
 import { InputBox, Loading } from '../../components';
 import axios from 'axios';
 import { useUserStore } from '../../store/useUserStore';
 import { BASE_URL } from '../../config/apiConfig';
+import { EmailIcon } from '../../assets/icons/emailicon';
 
 export const Signup = ({ navigation }: any) => {
   const [name, setName] = useState('');
@@ -29,7 +30,7 @@ export const Signup = ({ navigation }: any) => {
       name,
       email,
       username,
-      profileImg: 'https://example.com/profile.jpg',
+      profileImg: 'https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg',
       dateOfBirth: '2000-01-01',
     });
 
@@ -65,7 +66,7 @@ export const Signup = ({ navigation }: any) => {
         width="90%"
         height={50}
       >
-        <Phoneicon />
+        <PersonIcon fill={'black'} />
       </InputBox>
 
       <InputBox
@@ -76,7 +77,7 @@ export const Signup = ({ navigation }: any) => {
         width="90%"
         height={50}
       >
-        <Phoneicon />
+        <PersonIcon fill={'black'} />
       </InputBox>
 
       <InputBox
@@ -87,7 +88,7 @@ export const Signup = ({ navigation }: any) => {
         width="90%"
         height={50}
       >
-        <Phoneicon />
+        <EmailIcon />
       </InputBox>
 
       <View style={styles.rememberContainer}>

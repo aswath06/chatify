@@ -9,7 +9,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import { Arrowback, Phoneicon } from '../../assets/icons';
+import { Arrowback, Chaticon, HelpIcon, LogoutIcon, NotificationIcon, PersonIcon, Phoneicon, SecurityIcon } from '../../assets/icons';
 import { moderateScale } from '../../utils/scalingUtils';
 import { getUser, removeUser } from '../../store/storage';
 import { ProfileCard } from '../../components/profiecard';
@@ -100,32 +100,32 @@ const handleLogoutConfirm = async () => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <ListRow
-          icon={<Phoneicon />}
+          icon={<PersonIcon />}
           heading="Account"
           onPress={() => console.log('Account pressed')}
         />
         <ListRow
-          icon={<Phoneicon />}
+          icon={<Chaticon />}
           heading="Chat"
           onPress={() => console.log('Chat pressed')}
         />
         <ListRow
-          icon={<Phoneicon />}
+          icon={<NotificationIcon />}
           heading="Notification"
           onPress={() => console.log('Notification pressed')}
         />
         <ListRow
-          icon={<Phoneicon />}
+          icon={<SecurityIcon />}
           heading="Security"
           onPress={() => console.log('Security pressed')}
         />
         <ListRow
-          icon={<Phoneicon />}
+          icon={<HelpIcon />}
           heading="Help"
           onPress={() => console.log('Help pressed')}
         />
         <ListRow
-          icon={<Phoneicon />}
+          icon={<LogoutIcon />}
           heading="Logout"
           onPress={() => setLogoutModalVisible(true)}
           showArrow={false}

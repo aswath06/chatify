@@ -55,7 +55,7 @@ export const OTPPage = ({ route, navigation }: any) => {
       return;
     }
 
-    alert('OTP is verified successfully');
+    // alert('OTP is verified successfully');
 
     const userResponse = await axios.get(`${BASE_URL}/users/by-email`, {
       params: { email: phoneNumber },
@@ -148,7 +148,7 @@ export const OTPPage = ({ route, navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal:moderateScale(20) },
   header: { flexDirection: 'row', alignItems: 'center', width: '90%', marginTop: moderateScale(20), marginBottom: moderateScale(20), alignSelf: 'center', paddingTop: moderateScale(54) },
   headerTitle: { fontSize: moderateScale(22), fontWeight: 'bold', marginLeft: 10, color: 'black' },
 

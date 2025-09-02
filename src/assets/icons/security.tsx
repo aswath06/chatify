@@ -1,0 +1,14 @@
+import * as React from "react";
+import Svg, { Path, SvgProps } from "react-native-svg";
+
+export const SecurityIcon = (props: SvgProps) => (
+<Svg
+      height="24px"
+      viewBox="0 -960 960 960"
+      width="24px"
+      fill="#10C17D"
+      {...props}
+    >
+      <Path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80zm0-84q97-30 162-118.5T718-480H480v-315l-240 90v207q0 7 2 18h238v316z" />
+    </Svg>
+);

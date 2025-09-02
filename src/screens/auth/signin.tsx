@@ -5,6 +5,7 @@ import { moderateScale } from '../../utils/scalingUtils';
 import { InputBox, Loading } from '../../components';
 import axios from 'axios';
 import { BASE_URL } from '../../config/apiConfig';
+import { EmailIcon } from '../../assets/icons/emailicon';
 
 export const Signin = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
@@ -45,7 +46,7 @@ export const Signin = ({ navigation }: any) => {
         width="90%"
         height={50}
       >
-        <Phoneicon />
+        <EmailIcon />
       </InputBox>
 
       <View style={styles.rememberContainer}>

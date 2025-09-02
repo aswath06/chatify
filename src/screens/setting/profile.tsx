@@ -1,6 +1,6 @@
 import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ScrollView, Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { Arrowback, Editicon, MoreIcon } from '../../assets/icons';
+import { Arrowback, Editicon, MoreIcon, Shareicon } from '../../assets/icons';
 import { moderateScale } from '../../utils/scalingUtils';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getUser, storeUser } from '../../store/storage';
@@ -142,7 +142,7 @@ export const Profile = ({ navigation }) => {
           </View>
           <View style={styles.icons}>
             <View style={styles.imagecon}>
-              <Arrowback />
+              <Shareicon />
             </View>
             <View style={styles.imagecon}>
               <MoreIcon color='#10C17D'/>
