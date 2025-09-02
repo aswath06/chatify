@@ -1,26 +1,56 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Switch } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Switch, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { Logo, Phoneicon } from '../../assets/icons';
 import { moderateScale } from '../../utils/scalingUtils';
 import { InputBox, Loading } from '../../components';
+import axios from 'axios';
+import { useUserStore } from '../../store/useUserStore';
+import { BASE_URL } from '../../config/apiConfig';
 
 export const Signup = ({ navigation }: any) => {
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignup = () => {
-    console.log('Phone Number:', email); // log phone number
-    setIsLoading(true);
+  const setUser = useUserStore((state) => state.setUser);
 
-    // simulate network request
-    setTimeout(() => {
-      setIsLoading(false);
-      // Navigate to OTP page with phone number
-      navigation.navigate('otp', { phoneNumber: email.trim() });
-    }, 3000);
-  };
+  const handleSignup = async () => {
+  if (!name || !username || !email) {
+    return Alert.alert('Error', 'Please fill all fields.');
+  }
+
+  setIsLoading(true);
+
+  try {
+    // 1️⃣ Signup request
+    const response = await axios.post(`${BASE_URL}/users`, {
+      name,
+      email,
+      username,
+      profileImg: 'https://example.com/profile.jpg',
+      dateOfBirth: '2000-01-01',
+    });
+
+    // Save user in Zustand
+    setUser(response.data);
+
+    // 2️⃣ Trigger email verification
+    await axios.post(`${BASE_URL}/users/verify-email`, {
+      email: email.trim(),
+    });
+
+    setIsLoading(false);
+
+    // Navigate to OTP page
+    navigation.navigate('otp', { phoneNumber: email.trim() });
+  } catch (error: any) {
+    setIsLoading(false);
+    Alert.alert('Signup Failed', error.response?.data?.error || error.message);
+  }
+};
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,8 +58,30 @@ export const Signup = ({ navigation }: any) => {
       <Text style={styles.heading}>Sign up for free</Text>
 
       <InputBox
-        label="Phone Number"
-        placeholder="Phone number"
+        label="Name"
+        placeholder="Enter your name"
+        value={name}
+        onChangeText={setName}
+        width="90%"
+        height={50}
+      >
+        <Phoneicon />
+      </InputBox>
+
+      <InputBox
+        label="Username"
+        placeholder="Enter your username"
+        value={username}
+        onChangeText={setUsername}
+        width="90%"
+        height={50}
+      >
+        <Phoneicon />
+      </InputBox>
+
+      <InputBox
+        label="Email"
+        placeholder="Enter your email"
         value={email}
         onChangeText={setEmail}
         width="90%"
@@ -38,7 +90,6 @@ export const Signup = ({ navigation }: any) => {
         <Phoneicon />
       </InputBox>
 
-      {/* Remember Me */}
       <View style={styles.rememberContainer}>
         <Switch
           value={rememberMe}
@@ -49,12 +100,10 @@ export const Signup = ({ navigation }: any) => {
         <Text style={styles.rememberText}>Remember Me</Text>
       </View>
 
-      {/* Sign Up Button */}
       <TouchableOpacity style={styles.button} onPress={handleSignup} disabled={isLoading}>
         <Text style={styles.buttonText}>Sign up</Text>
       </TouchableOpacity>
 
-      {/* Sign In Text */}
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>Did you have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
@@ -62,7 +111,6 @@ export const Signup = ({ navigation }: any) => {
         </TouchableOpacity>
       </View>
 
-      {/* Loading Overlay */}
       {isLoading && (
         <View style={styles.loadingOverlay}>
           <Loading />
@@ -75,7 +123,7 @@ export const Signup = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: moderateScale(203),
+    paddingTop: moderateScale(60),
     alignItems: 'center',
     paddingHorizontal: moderateScale(20),
     backgroundColor: 'white',

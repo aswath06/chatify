@@ -4,6 +4,9 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 
 import { Arrowback } from '../../assets/icons';
 import { moderateScale } from '../../utils/scalingUtils';
 import { Loading } from '../../components';
+import { BASE_URL } from '../../config/apiConfig';
+import axios from 'axios';
+import { storeUser } from '../../store/storage';
 
 const { height } = Dimensions.get('window');
 
@@ -34,24 +37,46 @@ export const OTPPage = ({ route, navigation }: any) => {
     }
   };
 
-  const handleVerify = () => {
-    const enteredOtp = otp.join('');
-    console.log('Entered OTP:', enteredOtp);
+  const handleVerify = async () => {
+  const enteredOtp = otp.join('');
+  if (!enteredOtp) return;
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    setTimeout(() => {
+  try {
+    const verifyResponse = await axios.post(`${BASE_URL}/users/validate-otp`, {
+      email: phoneNumber,
+      otp: enteredOtp,
+    });
+
+    if (!verifyResponse.data.message.toLowerCase().includes('success')) {
       setIsLoading(false);
-      if (enteredOtp === '1234') {
-        navigation.navigate('dashboard'); // navigate to your next page
-      } else {
-        alert('Incorrect OTP');
-      }
-    }, 1500); // simulate loading for 1.5s
-  };
+      alert(verifyResponse.data.message || 'Incorrect OTP');
+      return;
+    }
+
+    alert('OTP is verified successfully');
+
+    const userResponse = await axios.get(`${BASE_URL}/users/by-email`, {
+      params: { email: phoneNumber },
+    });
+
+    const userData = userResponse.data;
+
+    // Store user using utility function
+    await storeUser(userData);
+
+    setIsLoading(false);
+    navigation.navigate('dashboard');
+  } catch (error: any) {
+    setIsLoading(false);
+    alert(error.response?.data?.error || error.message || 'OTP verification failed');
+  }
+};
+
+
 
   const handleResend = () => {
-    console.log('Resend code');
     setTimer(60);
     setCanResend(false);
   };
@@ -154,4 +179,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
 });
-
