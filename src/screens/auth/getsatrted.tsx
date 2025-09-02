@@ -1,11 +1,19 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Logo } from '../../assets/icons';
 
-export const GetStarted = () => {
+export const GetStarted = ({ navigation }: any) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.replace('dashboard'); // Navigate to Welcome after 1 second
+    }, 1000); // 1000ms = 1 sec
+
+    return () => clearTimeout(timer); // Cleanup on unmount
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
-      <Logo/>
+      <Logo />
     </View>
   );
 };
@@ -16,5 +24,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
 });

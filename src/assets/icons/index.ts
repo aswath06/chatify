@@ -4,3 +4,5 @@ export * from './phoneicon';
 export * from './moreicon';
 export * from './searchicon';
 export * from './addicon';
+export * from './qrcodeicon';
+export * from './editicon';

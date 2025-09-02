@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-
 import { moderateScale } from '../../utils/scalingUtils';
 import { MoreIcon, Searchicon } from '../../assets/icons';
+import { useNavigation } from '@react-navigation/native';
 
 export const Heading = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       {/* Left: Title */}
@@ -15,7 +17,10 @@ export const Heading = () => {
         <TouchableOpacity style={styles.iconButton}>
           <Searchicon />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.navigate('SettingPage')}
+        >
           <MoreIcon />
         </TouchableOpacity>
       </View>
@@ -29,6 +34,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
+    paddingVertical: moderateScale(10),
   },
   title: {
     fontSize: moderateScale(28),
